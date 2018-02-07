@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<features name="${feature.name}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+    <!--
+        Usage:
+        features:addurl mvn:${project.groupId}/${project.artifactId}/${project.version}/xml/features
+     -->
+
+    <feature name="${feature.name}" version="${project.version}">
+        <feature>camel-hazelcast</feature>
+        <feature>camel-spring</feature>
+        <feature>transaction</feature>
+        <feature>spring</feature>
+        <feature>spring-dm</feature>
+
+        <bundle>mvn:com.hazelcast/hazelcast/${hazelcast.version}</bundle>
+        <bundle>mvn:com.hazelcast/hazelcast-spring/${hazelcast.version}</bundle>
+        <bundle>mvn:${project.groupId}/${project.artifactId}/${project.version}</bundle>
+    </feature>
+
+    <feature name="${feature.name}-hazelcast1" version="${pom.version}" resolver="(obr)">
+        <feature version="${pom.version}" >${feature.name}</feature>
+        <bundle start-level='60'>spring:mvn:${project.groupId}/${project.artifactId}/${project.version}/xml/connection-hazelcast1</bundle>
+    </feature>
+
+    <feature name="${feature.name}-hazelcast2" version="${pom.version}" resolver="(obr)">
+        <feature version="${pom.version}" >${feature.name}</feature>
+        <bundle start-level='60'>spring:mvn:${project.groupId}/${project.artifactId}/${project.version}/xml/connection-hazelcast2</bundle>
+    </feature>
+
+    <feature name="${feature.name}-hazelcast3" version="${pom.version}" resolver="(obr)">
+        <feature version="${pom.version}" >${feature.name}</feature>
+        <bundle start-level='60'>spring:mvn:${project.groupId}/${project.artifactId}/${project.version}/xml/connection-hazelcast3</bundle>
+    </feature>
+
+    <feature name="${feature.name}-docker-connectivity" version="${pom.version}" resolver="(obr)"/>
+</features>

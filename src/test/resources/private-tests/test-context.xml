@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+		   http://www.springframework.org/schema/context
+		   http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <ctx:property-placeholder location="classpath:private-tests/test.properties"/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="ariesTMXidFactory" class="org.apache.geronimo.transaction.manager.XidFactoryImpl" />
+
+    <bean id="ariesTMLog" class="org.apache.geronimo.transaction.log.HOWLLog" init-method="doStart" destroy-method="doStop">
+        <constructor-arg index="0" value="org.objectweb.howl.log.BlockLogBuffer" />
+        <constructor-arg index="1" value="4" />     <!-- bufferSize -->
+        <constructor-arg index="2" value="true" />  <!-- checksumEnabled -->
+        <constructor-arg index="3" value="true" />  <!-- adler32Checksum -->
+        <constructor-arg index="4" value="50" />    <!-- flushSleepTimeMilliseconds -->
+        <constructor-arg index="5" value="target/txlog" /> <!-- logFileDir -->
+        <constructor-arg index="6" value="log" />   <!-- logFileExt -->
+        <constructor-arg index="7" value="txlog" /> <!-- logFileName -->
+        <constructor-arg index="8" value="128" />   <!-- maxBlocksPerFile -->
+        <constructor-arg index="9" value="0" />    <!-- maxBuffers -->
+        <constructor-arg index="10" value="2" />    <!-- maxLogFiles -->
+        <constructor-arg index="11" value="4" />    <!-- minBuffers -->
+        <constructor-arg index="12" value="-1" />   <!-- threadsWaitingForceThreshold -->
+        <constructor-arg index="13" ref="ariesTMXidFactory" /> <!-- XidFactory -->
+        <constructor-arg index="14">                <!-- serverBaseDir -->
+            <bean class="java.io.File">
+                <constructor-arg index="0" value="./" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ariesTransactionManager" class="org.apache.aries.transaction.internal.AriesTransactionManagerImpl">
+        <constructor-arg index="0" type="int" value="3600" />
+        <constructor-arg index="1" ref="ariesTMXidFactory" />
+        <constructor-arg index="2" ref="ariesTMLog" />
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <constructor-arg ref="ariesTransactionManager"/>
+    </bean>
+
+</beans>
+
+
+
+
+
+
+
+

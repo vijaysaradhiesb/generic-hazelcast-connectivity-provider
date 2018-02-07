@@ -1,0 +1,11 @@
+<hazelcast xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.6.xsd">
+
+    <import resource="classpath:private-tests/hazelcast1-imports.xml"/>
+
+    <network>
+        <port auto-increment="true">54321</port>
+    </network>
+
+</hazelcast>

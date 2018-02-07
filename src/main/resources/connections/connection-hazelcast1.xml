@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:hz="http://www.hazelcast.com/schema/spring"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                       http://www.springframework.org/schema/beans/spring-beans.xsd
+                       http://www.springframework.org/schema/osgi
+                       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+                       http://www.springframework.org/schema/osgi-compendium
+                       http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+                       http://www.springframework.org/schema/context
+                       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <ctx:annotation-config/>
+
+    <osgix:cm-properties id="properties" persistent-id="com.integ.connectivity.hazelcast1"/>
+    <ctx:property-placeholder properties-ref="properties"/>
+
+    <bean id="hazelcast1Config" class="com.hazelcast.config.XmlConfigBuilder">
+        <constructor-arg type="java.io.InputStream" value="file:${karaf.home}/${hazelcast1.config.dir:hazelcast.confd}/${hazelcast1.osgi.name}-config.xml"/>
+    </bean>
+
+    <bean id="hazelcastXa1" class="com.hazelcast.core.Hazelcast" factory-method="newHazelcastInstance" >
+        <constructor-arg>
+            <bean factory-bean="hazelcast1Config" factory-method="build"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="XAHazelcastManager1" class="com.integ.integration.product.connectivity.hazelcast.impl.XAHazelcastManagerImpl"/>
+
+    <osgi:service ref="XAHazelcastManager1" interface="com.integ.integration.product.connectivity.hazelcast.XAHazelcastManager">
+        <service-properties>
+            <entry key="integ.hazelcast.name" value="${hazelcast1.osgi.name}"/>
+            <entry key="integ.hazelcast.default" value="${hazelcast1.osgi.default:false}"/>
+        </service-properties>
+    </osgi:service>
+
+    <osgi:reference id="ariesTransactionManager">
+        <osgi:interfaces>
+            <value>javax.transaction.TransactionManager</value>
+            <value>org.apache.aries.transaction.AriesTransactionManager</value>
+        </osgi:interfaces>
+    </osgi:reference>
+
+</beans>

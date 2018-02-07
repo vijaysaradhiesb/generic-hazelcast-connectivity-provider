@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:hz="http://www.hazelcast.com/schema/spring"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                       http://www.springframework.org/schema/beans/spring-beans.xsd
+                       http://www.springframework.org/schema/osgi
+                       http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+    <bean id="hazelcast2Config" class="com.hazelcast.config.XmlConfigBuilder">
+        <constructor-arg type="java.io.InputStream" value="classpath:/hazelcast-test/hazelcast2-config.xml"/>
+    </bean>
+
+    <bean id="hazelcastXa2" class="com.hazelcast.core.Hazelcast" factory-method="newHazelcastInstance" >
+        <constructor-arg>
+            <bean factory-bean="hazelcast2Config" factory-method="build"/>
+        </constructor-arg>
+    </bean>
+    <bean id="XAHazelcastManager2" class="com.integ.integration.product.connectivity.hazelcast.impl.XAHazelcastManagerImpl"/>
+
+</beans>
